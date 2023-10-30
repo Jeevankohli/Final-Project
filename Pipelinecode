@@ -1,0 +1,57 @@
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('Download')
+        {
+            steps
+            {
+                git 'https://github.com/intelliqittrainings/maven.git'
+            }
+        }
+        stage('Build')
+        {
+            steps
+            {
+                sh 'mvn package'
+            }
+        }
+        stage('Create_Docker_Image')
+        {
+            steps
+            {
+                
+            }
+        }
+        stage('Push_Docker_image')
+        {
+            steps
+            {
+                
+            }
+        }
+        stage('Execute Ansible playbook to deploy docker app in the QAserrvers')
+        {
+            steps
+            {
+                sh 'ssh ubuntu@172.31.20.134 ansible-playbook playbook2.yml -b'
+            }
+        }
+        stage('Downlaod and execute the selenium scripts')
+        {
+            steps
+            {
+                git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+                sh 'java -jar testing.jar'
+            }
+        }
+        stage('Execute Kubernetes definition files to deploy into proservers')
+        {
+            steps
+            {
+                sh '''ssh ubuntu@44.198.166.244 kubectl apply -f myapp-deployment.yml ssh ubuntu@44.198.166.244 kubectl apply -f myapp-service.yml'''
+            }
+        }
+    }
+}
